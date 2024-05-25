@@ -1,3 +1,3 @@
-module github.com/moltenwolfcub/B-Tree_Experimentation
+module github.com/moltenwolfcub/btree
 
 go 1.22.0
