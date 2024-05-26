@@ -18,70 +18,73 @@ func slicesDifferent[T comparable](a []T, b []T) bool {
 }
 
 func TestOneItem(t *testing.T) {
-	node := node{}
+	tree := NewBTree()
 
-	node.addItem(Element{7, "foo"})
+	tree.Insert(Element{7, "foo"})
 
-	if slicesDifferent(node.elements, []Element{{7, "foo"}}) {
-		t.Errorf("Node.addItem(7); provides %v; want [7]", elementToKeys(node.elements))
+	if slicesDifferent(tree.rootNode.elements, []Element{{7, "foo"}}) {
+		t.Errorf("Node.addItem(7); provides %v; want [7]", elementToKeys(tree.rootNode.elements))
 	}
 }
 
 func TestTwoItemsRightOrder(t *testing.T) {
-	node := node{}
+	tree := NewBTree()
 
-	node.addItem(Element{2, "foo"})
-	node.addItem(Element{3, "foo"})
+	tree.Insert(Element{2, "foo"})
+	tree.Insert(Element{3, "foo"})
 
-	if slicesDifferent(node.elements, []Element{{2, "foo"}, {3, "foo"}}) {
-		t.Errorf("Added 2 items correctly ordered. Got %v; wanted [2, 3]", elementToKeys(node.elements))
+	if slicesDifferent(tree.rootNode.elements, []Element{{2, "foo"}, {3, "foo"}}) {
+		t.Errorf("Added 2 items correctly ordered. Got %v; wanted [2, 3]", elementToKeys(tree.rootNode.elements))
 	}
 }
 
 func TestTwoItemsWrongOrder(t *testing.T) {
-	node := node{}
+	tree := NewBTree()
 
-	node.addItem(Element{6, "foo"})
-	node.addItem(Element{4, "foo"})
+	tree.Insert(Element{6, "foo"})
+	tree.Insert(Element{4, "foo"})
 
-	if slicesDifferent(node.elements, []Element{{4, "foo"}, {6, "foo"}}) {
-		t.Errorf("Added 2 items incorrectly ordered. Got %v; wanted [4, 6]", elementToKeys(node.elements))
+	if slicesDifferent(tree.rootNode.elements, []Element{{4, "foo"}, {6, "foo"}}) {
+		t.Errorf("Added 2 items incorrectly ordered. Got %v; wanted [4, 6]", elementToKeys(tree.rootNode.elements))
 	}
 }
 
 func TestAddBetweenTwoItems(t *testing.T) {
-	node := node{}
-	node.addItem(Element{15, "foo"})
-	node.addItem(Element{18, "foo"})
+	tree := NewBTree()
 
-	node.addItem(Element{17, "foo"})
+	tree.Insert(Element{15, "foo"})
+	tree.Insert(Element{18, "foo"})
 
-	if slicesDifferent(node.elements, []Element{{15, "foo"}, {17, "foo"}, {18, "foo"}}) {
-		t.Errorf("Added item between 2 other items. Got %v; wanted [15, 17, 18]", elementToKeys(node.elements))
+	tree.Insert(Element{17, "foo"})
+
+	if slicesDifferent(tree.rootNode.elements, []Element{{15, "foo"}, {17, "foo"}, {18, "foo"}}) {
+		t.Errorf("Added item between 2 other items. Got %v; wanted [15, 17, 18]", elementToKeys(tree.rootNode.elements))
 	}
 }
 
 func TestAddBeforeTwoItems(t *testing.T) {
-	node := node{}
-	node.addItem(Element{15, "foo"})
-	node.addItem(Element{18, "foo"})
+	tree := NewBTree()
 
-	node.addItem(Element{13, "foo"})
+	tree.Insert(Element{15, "foo"})
+	tree.Insert(Element{18, "foo"})
 
-	if slicesDifferent(node.elements, []Element{{13, "foo"}, {15, "foo"}, {18, "foo"}}) {
-		t.Errorf("Added item before 2 other items. Got %v; wanted [13, 15, 18]", elementToKeys(node.elements))
+	tree.Insert(Element{13, "foo"})
+
+	if slicesDifferent(tree.rootNode.elements, []Element{{13, "foo"}, {15, "foo"}, {18, "foo"}}) {
+		t.Errorf("Added item before 2 other items. Got %v; wanted [13, 15, 18]", elementToKeys(tree.rootNode.elements))
 	}
 }
 
 func TestAddAfterTwoItems(t *testing.T) {
-	node := node{}
-	node.addItem(Element{15, "foo"})
-	node.addItem(Element{18, "foo"})
+	tree := NewBTree()
 
-	node.addItem(Element{22, "foo"})
+	tree.Insert(Element{15, "foo"})
+	tree.Insert(Element{18, "foo"})
 
-	if slicesDifferent(node.elements, []Element{{15, "foo"}, {18, "foo"}, {22, "foo"}}) {
-		t.Errorf("Added item after 2 other items. Got %v; wanted [15, 18, 22]", elementToKeys(node.elements))
+	tree.Insert(Element{22, "foo"})
+
+	if slicesDifferent(tree.rootNode.elements, []Element{{15, "foo"}, {18, "foo"}, {22, "foo"}}) {
+		t.Errorf("Added item after 2 other items. Got %v; wanted [15, 18, 22]", elementToKeys(tree.rootNode.elements))
 	}
 }
 
