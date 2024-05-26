@@ -1,28 +1,55 @@
 package btree
 
-type NodeInt int
+type Element struct {
+	key   int
+	value string
+}
+
+func NewElement(k int, v string) Element {
+	return Element{k, v}
+}
+
+func elementToKeys(kvs []Element) []int {
+	keys := make([]int, 0)
+	for _, v := range kvs {
+		keys = append(keys, v.key)
+	}
+	return keys
+}
 
 type BTree struct {
-	rootNode *Node
+	rootNode *node
 }
 
 func NewBTree() *BTree {
 	t := &BTree{}
-	t.rootNode = &Node{
+	t.rootNode = &node{
 		tree: t,
 	}
 	return t
 }
 
-type Node struct {
-	keys     []NodeInt
-	children []*Node
-	parent   *Node
+func (t *BTree) Insert(e Element) {
+	t.rootNode.addItem(e)
+}
+
+func (t BTree) Search(key int) string {
+	return "NOT IMPLEMENTED"
+}
+
+type node struct {
+	keys     []Element
+	children []*node
+	parent   *node
 
 	tree *BTree
 }
 
-func (n *Node) addItem(item NodeInt) {
+// func (n Node) search() {
+
+// }
+
+func (n *node) addItem(item Element) {
 	if len(n.keys) == 0 {
 		//only starting node can have 0 items so just add it
 		n.keys = append(n.keys, item)
@@ -33,11 +60,11 @@ func (n *Node) addItem(item NodeInt) {
 	for i, k := range n.keys {
 		if k == item {
 			panic("Haven't implemented behaviour for adding the same element twice into a tree")
-		} else if k < item {
+		} else if k.key < item.key {
 			continue
-		} else if k > item {
+		} else if k.key > item.key {
 			//shift everything after i along by 1 and replace index i with item
-			n.keys = append(n.keys, 0)
+			n.keys = append(n.keys, Element{})
 			copy(n.keys[i+1:], n.keys[i:])
 			n.keys[i] = item
 
@@ -62,11 +89,11 @@ postFor:
 			// 	keys:   n.keys[3:],
 			// })
 		} else {
-			newRoot := Node{
+			newRoot := node{
 				tree: n.tree,
 				keys: n.keys[2:3],
 			}
-			otherChild := Node{
+			otherChild := node{
 				tree: n.tree,
 				keys: n.keys[3:],
 			}
